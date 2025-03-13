@@ -83,6 +83,7 @@ A **equipe de projeto** é composta por um grupo multidisciplinar comprometido c
 - **Gustavo Emanuell**
 - **Emilly**
 - **William**
+- **Gabriel**
 
 Juntos, combinamos **expertise técnica**, **dedicação** e um compromisso real com a inclusão e a inovação social.
 

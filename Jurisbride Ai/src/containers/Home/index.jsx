@@ -57,8 +57,8 @@ function Home() {
       <StyledLink to="/home">Home</StyledLink>
       <StyledLink to="/register">Registre-Se</StyledLink>
       <StyledLink to="">Login</StyledLink>
-      <StyledLink to="">Juris Ia</StyledLink>
-      <StyledLink to="">Conecte-se com um Advogado</StyledLink>
+      <StyledLink to="">Juris IA</StyledLink>
+      <StyledLink to="/connect-lawyer">Conecte-se com um Advogado</StyledLink> 
       <SearchBar type="text" placeholder="Como posso te ajudar hoje?" />
     </div>
   );

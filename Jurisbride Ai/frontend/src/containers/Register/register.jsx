@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const RegisterContainer = styled.div`
   max-inline-size: 400px;
   margin: 50px auto;
   padding: 2rem;
-  background: #fff; /* Fundo branco */
+  background: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -59,7 +63,7 @@ const ErrorMessage = styled.p`
 
 const Button = styled.button`
   padding: 1rem 2rem;
-  background: linear-gradient(45deg, #7f5af0, #916bff); /* Gradiente azul-violeta */
+  background: linear-gradient(45deg, #7f5af0, #916bff);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -74,6 +78,11 @@ const Button = styled.button`
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(127, 90, 240, 0.5);
   }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
 `;
 
 const Register = () => {
@@ -85,6 +94,8 @@ const Register = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,7 +105,12 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -102,7 +118,39 @@ const Register = () => {
       return;
     }
 
-    console.log("Formulário enviado:", formData);
+    if (!validateEmail(formData.email)) {
+      setError("Por favor, insira um e-mail válido.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post("http://localhost:3000/api/users/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.status === 201) {
+        toast.success("Usuário registrado com sucesso!");
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setTimeout(() => {
+          navigate("/login"); // Redireciona para a página de login após 2 segundos
+        }, 2000);
+      }
+    } catch (error) {
+      setError(error.response?.data?.error || "Erro ao registrar usuário");
+      toast.error(error.response?.data?.error || "Erro ao registrar usuário");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -111,28 +159,59 @@ const Register = () => {
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label htmlFor="name">Nome</Label>
-          <Input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </FormGroup>
 
         <FormGroup>
           <Label htmlFor="email">E-mail</Label>
-          <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </FormGroup>
 
         <FormGroup>
           <Label htmlFor="password">Senha</Label>
-          <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
         </FormGroup>
 
         <FormGroup>
           <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-          <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+          <Input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
         </FormGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <Button type="submit">Registrar</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? "Registrando..." : "Registrar"}
+        </Button>
       </Form>
+      <ToastContainer />
     </RegisterContainer>
   );
 };

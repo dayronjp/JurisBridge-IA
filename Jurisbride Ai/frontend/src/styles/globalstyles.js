@@ -5,7 +5,7 @@ const Globalstyles = createGlobalStyle`
         text-align: center;
         color: white;
     }
-
+    * 
     body {
         font-family: Arial, sans-serif;
         background-color: black;
@@ -15,5 +15,6 @@ const Globalstyles = createGlobalStyle`
         text-decoration: none; 
     }
 `;
+
 
 export default Globalstyles;

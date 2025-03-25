@@ -2,7 +2,7 @@ import { Title } from "./styles.js";
 import { Link } from 'react-router-dom';
 import Globalstyles from "../../styles/globalstyles.js";
 import styled from "styled-components";
-
+import logo from "../../assets/logo_jb.png"; 
 const StyledLink = styled(Link)`
   display: inline-block;
   padding: 10px 20px;
@@ -49,10 +49,19 @@ const SearchBar = styled.input`
   }
 `;
 
+const Logo = styled.img`
+  position: absolute;
+  top: 13px;
+  left: 20px;
+  width: 95px; 
+  height: auto;
+`;
+
 function Home() {
   return (
     <div>
       <Globalstyles />
+      <Logo src={logo} alt="Logo" />
       <Title>JurisBridge AI</Title>
       <StyledLink to="/home">Home</StyledLink>
       <StyledLink to="/register">Registre-Se</StyledLink>

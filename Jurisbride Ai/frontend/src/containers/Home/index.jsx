@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Globalstyles from "../../styles/globalstyles.js";
 import styled from "styled-components";
 import logo from "../../assets/logo_jb.png"; 
+
 const StyledLink = styled(Link)`
   display: inline-block;
   padding: 10px 20px;
@@ -66,7 +67,7 @@ function Home() {
       <StyledLink to="/home">Home</StyledLink>
       <StyledLink to="/register">Registre-Se</StyledLink>
       <StyledLink to="/login">Login</StyledLink>
-      <StyledLink to="">Juris Ia</StyledLink>
+      <StyledLink to="">Juris IA</StyledLink>
       <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
       <SearchBar type="text" placeholder="Como posso te ajudar hoje?" />
     </div>

@@ -67,7 +67,7 @@ function Home() {
       <StyledLink to="/home">Home</StyledLink>
       <StyledLink to="/register">Registre-Se</StyledLink>
       <StyledLink to="/login">Login</StyledLink>
-      <StyledLink to="">Juris IA</StyledLink>
+      <StyledLink to="/jurisia">Juris IA</StyledLink>
       <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
       <SearchBar type="text" placeholder="Como posso te ajudar hoje?" />
     </div>

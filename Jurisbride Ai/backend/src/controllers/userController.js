@@ -1,4 +1,4 @@
-import pool from '../db.js'; // Supondo que você tenha uma configuração de pool de conexão no arquivo db.js
+import pool from '../db.js'; 
 import bcrypt from 'bcrypt';
 
 // Função de registro

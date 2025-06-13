@@ -1,12 +1,12 @@
-// src/db.js
+import 'dotenv/config';
 import pg from 'pg';
 const { Pool } = pg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // URL do NeonDB
+  connectionString: process.env.DATABASE_URL, 
   ssl: {
     rejectUnauthorized: false,
   },
 });
 
-export default pool; // Exportação padrão
+export default pool; 

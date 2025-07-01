@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Globalstyles from "../../styles/globalstyles.js";
 import styled from "styled-components";
 import logo from "../../assets/logo_jb.png";
+import TypingEffect from '../../components/TypingEffect/Typing.jsx';
 
 const StyledLink = styled(Link)`
   display: inline-block;
@@ -130,6 +131,7 @@ function Home() {
       <StyledLink to="/jurisia">Juris IA</StyledLink>
       <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
       <Divider />
+      <TypingEffect />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import JurisIa from './containers/JurisIA/jurisia'
 import Globalstyles from './styles/globalstyles';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Jurisia from './containers/JurisIA/jurisia';
+import Perfil from './containers/Perfil/perfil';
 
 ReactDom.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -19,6 +20,7 @@ ReactDom.createRoot(document.getElementById('root')).render(
         <Route path="/conectese" element={<Conectse />} /> 
         <Route path="/login" element={<Login />} />
         <Route path ="/jurisia" element ={<Jurisia />} />
+        <Route path = "/perfil" element = {<Perfil />} />
       </Routes>
     </Router>
   </React.StrictMode>

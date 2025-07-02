@@ -147,9 +147,11 @@ const Login = () => {
       console.log("Resposta do servidor:", response.data);
 
       if (response.status === 200) {
+        const userName = response.data.name || response.data.username || "Usuário";
+        localStorage.setItem("userName", userName);
         toast.success("Login efetuado com sucesso!");
         setTimeout(() => {
-          navigate("/");
+          navigate("/perfil");
         }, 2000);
       }
     } catch (error) {

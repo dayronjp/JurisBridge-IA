@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react()], // Adiciona o plugin React
+  plugins: [react()], 
   build: {
     rollupOptions: {
       external: [
@@ -14,8 +14,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0', // Permite acessos externos na rede
-    port: 5173 // Define a porta do servidor
+    host: '0.0.0.0', 
+    port: 5173 
   }
 });
-// https://vite.dev/config/

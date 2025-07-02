@@ -142,7 +142,7 @@ const Register = () => {
           confirmPassword: "",
         });
         setTimeout(() => {
-          navigate("/login"); // Redireciona para a página de login após 2 segundos
+          navigate("/login"); 
         }, 2000);
       }
     } catch (error) {
@@ -155,7 +155,7 @@ const Register = () => {
 
   return (
     <RegisterContainer>
-      <Title>Registrar-se</Title>
+      <Title>Comece por aqui!</Title>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label htmlFor="name">Nome</Label>

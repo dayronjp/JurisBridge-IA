@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Pencil, ShieldCheck, UserRound } from "lucide-react";
+import imageCompression from "browser-image-compression";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -42,7 +43,7 @@ const Avatar = styled.div`
   height: 140px;
   border-radius: 50%;
   background-color: #555;
-  background-image: url(${(props) => props.src || ""});
+  background-image: ${(props) => (props.src ? `url(${props.src})` : "none")};
   background-size: cover;
   background-position: center;
   box-shadow: 0 0 25px rgba(127, 90, 240, 0.5);
@@ -162,11 +163,11 @@ const Dropdown = styled.div`
 
 function Perfil() {
   const name = localStorage.getItem("userName");
-  const userType = localStorage.getItem("userType") || "user"; // definido após login ou registro
+  const userType = localStorage.getItem("userType") || "user";
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [description, setDescription] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [editingDesc, setEditingDesc] = useState(false);
   const fileInputRef = useRef();
 
@@ -175,7 +176,12 @@ function Perfil() {
       try {
         const response = await axios.get(`http://localhost:3000/api/users/profile?name=${name}`);
         setDescription(response.data.description || "");
-        setAvatarUrl(response.data.avatar_url || "");
+
+        const avatarRes = await axios.get(`http://localhost:3000/api/users/avatar/${name}`);
+        const base64Image = avatarRes.data.image;
+        if (base64Image) {
+          setAvatarUrl(`data:image/png;base64,${base64Image}`);
+        }
       } catch (err) {
         console.error("Erro ao buscar perfil:", err);
       }
@@ -201,20 +207,30 @@ function Perfil() {
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result;
-        setAvatarUrl(base64);
-        try {
-          await axios.put("http://localhost:3000/api/users/update-avatar", {
-            name,
-            avatar_url: base64,
-          });
-        } catch (err) {
-          console.error("Erro ao salvar avatar:", err);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1024,
+          useWebWorker: true,
+        };
+
+        const compressedFile = await imageCompression(file, options);
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("avatar", compressedFile);
+
+        await axios.put("http://localhost:3000/api/users/update-avatar", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        const localUrl = URL.createObjectURL(compressedFile);
+        setAvatarUrl(localUrl);
+      } catch (error) {
+        console.error("Erro ao salvar avatar:", error);
+      }
     }
   };
 
@@ -251,7 +267,7 @@ function Perfil() {
         <ProfileCard>
           <AvatarRow>
             <AvatarWrapper>
-              <Avatar src={avatarUrl} onClick={handleAvatarClick} />
+              <Avatar src={avatarUrl || undefined} onClick={handleAvatarClick} />
               <AvatarHint>Clique para mudar foto</AvatarHint>
               <HiddenInput
                 type="file"

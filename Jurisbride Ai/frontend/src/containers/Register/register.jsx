@@ -17,7 +17,7 @@ const RegisterContainer = styled.div`
 
 const Title = styled.h2`
   text-align: center;
-  margin-block-end: 1.5rem;
+  margin-bottom: 1.5rem;
   color: #333;
 `;
 
@@ -33,7 +33,7 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  margin-block-end: 0.5rem;
+  margin-bottom: 0.5rem;
   color: #555;
   font-weight: 600;
 `;
@@ -54,11 +54,28 @@ const Input = styled.input`
   }
 `;
 
+const Select = styled.select`
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  background: #f8f8f8;
+  color: #333;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:focus {
+    border-color: #7f5af0;
+    outline: none;
+    box-shadow: 0 0 8px rgba(127, 90, 240, 0.2);
+  }
+`;
+
 const ErrorMessage = styled.p`
   color: #e74c3c;
   text-align: center;
   font-size: 0.9rem;
-  margin-block-start: -0.5rem;
+  margin-top: -0.5rem;
 `;
 
 const Button = styled.button`
@@ -91,6 +108,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    type: "user", // 👈 tipo padrão
   });
 
   const [error, setError] = useState("");
@@ -99,16 +117,13 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,6 +146,7 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        type: formData.type, // 👈 enviado pro backend
       });
 
       if (response.status === 201) {
@@ -140,9 +156,10 @@ const Register = () => {
           email: "",
           password: "",
           confirmPassword: "",
+          type: "user",
         });
         setTimeout(() => {
-          navigate("/login"); 
+          navigate("/login");
         }, 2000);
       }
     } catch (error) {
@@ -203,6 +220,20 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="type">Tipo de Conta</Label>
+          <Select
+            id="type"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            required
+          >
+            <option value="user">Usuário Comum</option>
+            <option value="advogado">Advogado</option>
+          </Select>
         </FormGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}

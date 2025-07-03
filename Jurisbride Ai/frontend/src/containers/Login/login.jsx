@@ -147,8 +147,12 @@ const Login = () => {
       console.log("Resposta do servidor:", response.data);
 
       if (response.status === 200) {
-        const userName = response.data.name || response.data.username || "Usuário";
+        const userName = response.data.name || "Usuário";
+        const userType = response.data.type || "user";
+
         localStorage.setItem("userName", userName);
+        localStorage.setItem("userType", userType)
+
         toast.success("Login efetuado com sucesso!");
         setTimeout(() => {
           navigate("/perfil");

@@ -1,20 +1,26 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import multer from 'multer'; 
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 
-
-// Inicializa o aplicativo Express
 const app = express();
 
-// Configura o CORS para permitir requisições do frontend
+// Configura CORS
 app.use(cors());
 
-// Habilita o parsing de JSON no corpo das requisições
-app.use(express.json());
+// Aumenta o limite de JSON e urlencoded para evitar erro 413
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
-// Define as rotas
+// Middleware de upload com limite de 1MB
+const upload = multer({
+  limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+});
+
+
+// Rotas
 app.use('/api/users', userRoutes);
 app.use('/api', chatRoutes);
 

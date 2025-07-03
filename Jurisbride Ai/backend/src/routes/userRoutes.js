@@ -1,13 +1,29 @@
 // src/routes/userRoutes.js
 import express from 'express';
-import { registerUser, loginUser } from '../../../backend/src/controllers/userController.js';
+import multer from 'multer';
+import {
+  registerUser,
+  loginUser,
+  getUserProfile,        
+  updateDescription,
+  updateAvatar,
+  getAvatar      
+} from '../../../backend/src/controllers/userController.js';
 
 const router = express.Router();
+const storage = multer.memoryStorage();
 
-// Rota de registro
+const upload = multer({
+  storage,
+  limits: { fileSize: 1 * 1024 * 1024 },
+});
+
 router.post('/register', registerUser);
-
-// Rota de login
 router.post('/login', loginUser);
+router.get('/profile', getUserProfile);
+router.put('/update-description', updateDescription);
+router.get('/avatar/:name', getAvatar);
+router.put('/update-avatar', upload.single('avatar'), updateAvatar);
+
 
 export default router;

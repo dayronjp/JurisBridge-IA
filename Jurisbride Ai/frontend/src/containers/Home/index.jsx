@@ -82,6 +82,22 @@ const ModalContent = styled.div`
   }
 `;
 
+// INDICADOR DE LOGIN
+const StatusLogin = styled.div`
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  background: rgba(70, 0, 100, 0.5);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px #b884ff88;
+  animation: ${fadeInUp} 0.8s ease forwards, ${glowLoop} 4s infinite;
+  font-family: "Georgia", serif;
+`;
+
 // estilos gerais
 const Container = styled.div`
   max-width: 1280px;
@@ -184,30 +200,17 @@ const Divider = styled.hr`
   height: 2px;
   width: 100%;
   margin: 40px 0;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.8),
-    transparent
-  );
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
-              0 0 20px rgba(255, 255, 255, 0.3),
-              0 0 30px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+  box-shadow: 0 0 10px rgba(255,255,255,0.6), 0 0 20px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.2);
   opacity: 0.9;
   animation: pulseGlow 2s ease-in-out infinite;
 
   @keyframes pulseGlow {
     0%, 100% {
-      box-shadow:
-        0 0 10px rgba(255, 255, 255, 0.6),
-        0 0 20px rgba(255, 255, 255, 0.3),
-        0 0 30px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px rgba(255,255,255,0.6), 0 0 20px rgba(255,255,255,0.3), 0 0 30px rgba(255,255,255,0.2);
     }
     50% {
-      box-shadow:
-        0 0 15px rgba(255, 255, 255, 0.9),
-        0 0 30px rgba(255, 255, 255, 0.5),
-        0 0 45px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.5), 0 0 45px rgba(255,255,255,0.3);
     }
   }
 `;
@@ -371,6 +374,10 @@ function Home() {
     <>
       <Globalstyles />
       <StyledLogo src={logo} alt="Logo" />
+      <StatusLogin>
+        {userName ? `👋 Olá, ${userName}` : "🔒 Você não está logado"}
+      </StatusLogin>
+
       <Container>
         <StyledSearchBar type="text" placeholder="Como posso te ajudar hoje?" />
         <LinksContainer>

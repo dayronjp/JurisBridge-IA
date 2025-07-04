@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo_jb.png";
 import bridgejai from "../../assets/bridgejai.png";
+import { ArrowLeft } from "lucide-react";
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -165,7 +166,7 @@ const BackgroundImage = styled.img`
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 66%; /* aumentado 10% de 60% */
+  width: 66%;
   height: auto;
   max-width: none;
   transform: translate(-50%, -50%);
@@ -189,12 +190,42 @@ const Title = styled.h1`
   z-index: 1;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f3f3f3;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s, transform 0.2s;
+  z-index: 1000;
+
+  &:hover {
+    background: #e5e5e5;
+    transform: scale(1.05);
+  }
+
+  svg {
+    stroke: #7f5af0;
+    width: 20px;
+    height: 20px;
+  }
+`;
+
 export default function JurisIA() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState(null);
   const responseRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => setInput(e.target.value);
 
@@ -234,6 +265,9 @@ export default function JurisIA() {
   return (
     <>
       <GlobalStyles />
+      <BackButton onClick={() => navigate("/")}>
+        <ArrowLeft />
+      </BackButton>
       <Link to="/">
         <Logo src={logo} alt="JurisBridge Logo" />
       </Link>

@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Globalstyles from "../../styles/globalstyles.js";
 import styled, { keyframes } from "styled-components";
 import logo from "../../assets/logo_jb.png";
 import TypingEffect from '../../components/TypingEffect/Typing.jsx';
 
+// animações
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(25px); }
   to { opacity: 1; transform: translateY(0); }
@@ -27,6 +29,60 @@ const rock = keyframes`
   100% { transform: rotate(-1.5deg) translateY(0px); }
 `;
 
+// MODAL personalizado
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 0, 30, 0.75);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: #1d1030;
+  padding: 2.5rem;
+  border-radius: 18px;
+  box-shadow: 0 0 20px #b884ffaa;
+  text-align: center;
+  max-width: 400px;
+  color: white;
+  font-family: "Georgia", serif;
+  animation: ${fadeInScale} 0.5s ease forwards;
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+
+  button {
+    background: #b884ff;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #9f6de2;
+      box-shadow: 0 0 10px #b884ffcc;
+    }
+  }
+`;
+
+// estilos gerais
 const Container = styled.div`
   max-width: 1280px;
   margin: 0 auto;
@@ -69,7 +125,6 @@ const StyledSearchBar = styled.input`
   &::placeholder {
     color: white;
     opacity: 0.7;
-    transition: all 0.3s ease;
   }
 
   &:focus {
@@ -90,11 +145,30 @@ const StyledLink = styled(Link)`
   display: inline-block;
   padding: 10px 20px;
   color: white;
-  text-decoration: none;  
+  text-decoration: none;
   margin: 20px 10px 0 10px;
   border: 2px solid #ddd;
   border-radius: 25px;
   cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: purple;
+    transform: scale(1.1);
+    text-shadow: 0 0 5px rgba(128, 0, 128, 0.6);
+  }
+`;
+
+const StyledButtonLink = styled.button`
+  background: none;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  padding: 10px 20px;
+  color: white;
+  margin: 20px 10px 0 10px;
+  cursor: pointer;
+  font-size: 1rem;
   user-select: none;
   transition: all 0.3s ease;
 
@@ -240,8 +314,8 @@ const CTASection = styled.section`
 const CTAButton = styled(Link)`
   background: white;
   color: #7e57c2;
-  padding: 0.8rem 2.4rem; /* ~80% do tamanho anterior */
-  font-size: 1rem; /* menor tamanho para mais sutileza */
+  padding: 0.8rem 2.4rem;
+  font-size: 1rem;
   border-radius: 50px;
   font-weight: 700;
   text-decoration: none;
@@ -260,7 +334,7 @@ const CTAButton = styled(Link)`
 const Footer = styled.footer`
   margin-top: 7rem;
   padding: 1.2rem 1rem;
-  background: rgba(33, 0, 70, 0.3); /* roxo escuro translúcido */
+  background: rgba(33, 0, 70, 0.3);
   backdrop-filter: blur(8px);
   color: white;
   text-align: center;
@@ -270,8 +344,29 @@ const Footer = styled.footer`
   box-shadow: 0 0 15px #b884ff66;
 `;
 
-
 function Home() {
+  const [userName, setUserName] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const name = localStorage.getItem("userName");
+    setUserName(name);
+  }, []);
+
+  const handleJurisIA = () => {
+    if (userName) {
+      navigate("/jurisia");
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const closeModalAndGoToLogin = () => {
+    setShowModal(false);
+    navigate("/login");
+  };
+
   return (
     <>
       <Globalstyles />
@@ -281,9 +376,12 @@ function Home() {
         <LinksContainer>
           <StyledLink to="/register">Registre-Se</StyledLink>
           <StyledLink to="/login">Login</StyledLink>
-          <StyledLink to="/jurisia">Juris IA</StyledLink>
+          <StyledButtonLink onClick={handleJurisIA}>
+            Juris IA {userName ? "" : "🔒"}
+          </StyledButtonLink>
           <StyledLink to="/conectese">Conecte-se com um Advogado</StyledLink>
         </LinksContainer>
+
         <Divider />
         <TypingWrapper>
           <TypingEffect />
@@ -294,59 +392,56 @@ function Home() {
             <h2>O que é o JurisBridge?</h2>
             <p>
               O <strong>JurisBridge</strong> nasceu com o propósito de integrar tecnologia e justiça
-              em uma única plataforma. Aqui você acessa serviços jurídicos, inteligência artificial e
-              profissionais capacitados de forma acessível, segura e moderna.
-            </p>
-            <p>
-              Nossa missão é romper as barreiras entre o cidadão e o conhecimento jurídico com
-              ferramentas intuitivas e poderosas que facilitam sua jornada rumo à informação clara e
-              à resolução de problemas legais.
+              em uma única plataforma...
             </p>
           </TextArea>
-
           <BoatFloat src={logo} alt="Barco balançando" />
         </InfoSection>
 
-        {/* Features */}
         <FeaturesSection>
           <FeatureCard>
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" /></svg>
+            <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" /></svg>
             <h3>Consulta IA</h3>
             <p>Respostas jurídicas rápidas e precisas com inteligência artificial.</p>
           </FeatureCard>
           <FeatureCard>
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="50" x="7" y="7" rx="8"/></svg>
+            <svg viewBox="0 0 64 64"><rect width="50" height="50" x="7" y="7" rx="8" /></svg>
             <h3>Acompanhamento</h3>
             <p>Acompanhe seu processo jurídico em tempo real, sem complicações.</p>
           </FeatureCard>
           <FeatureCard>
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,5 59,59 5,59"/></svg>
+            <svg viewBox="0 0 64 64"><polygon points="32,5 59,59 5,59" /></svg>
             <h3>Documentos Automáticos</h3>
             <p>Geração automática de documentos legais, personalizados e confiáveis.</p>
           </FeatureCard>
         </FeaturesSection>
 
-        {/* Estatísticas */}
         <StatsSection>
           <p>
-            Com seu feedback, nosso sistema evolui constantemente — tornando o JurisBridge cada vez mais inteligente e confiável para todos.
-            <br />
-            Experimente hoje e ajude a construir a justiça do futuro com a gente!
+            Com seu feedback, nosso sistema evolui constantemente — tornando o JurisBridge mais confiável.
           </p>
         </StatsSection>
 
-        {/* CTA */}
         <CTASection>
           <h2>Quer facilitar sua vida jurídica?</h2>
-          <p>Cadastre-se agora e descubra como o JurisBridge pode transformar sua experiência com o sistema legal.</p>
+          <p>Cadastre-se agora e descubra como o JurisBridge pode te ajudar.</p>
           <CTAButton to="/register">Começar Agora</CTAButton>
         </CTASection>
 
-        {/* Footer */}
         <Footer>
           &copy; 2025 JurisBridge. Todos os direitos reservados.
         </Footer>
       </Container>
+
+      {showModal && (
+        <ModalOverlay>
+          <ModalContent>
+            <h3>⚠️ Acesso restrito</h3>
+            <p>Para acessar a <strong>Juris IA</strong>, você precisa estar logado.</p>
+            <button onClick={closeModalAndGoToLogin}>Fazer Login</button>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </>
   );
 }

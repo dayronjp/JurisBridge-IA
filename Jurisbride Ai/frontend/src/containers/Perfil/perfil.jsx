@@ -1,10 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import Globalstyles from "../../styles/globalstyles";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Pencil, ShieldCheck, UserRound } from "lucide-react";
 import imageCompression from "browser-image-compression";
+import { ArrowLeft} from "lucide-react"
+
+const BackButton = styled.button`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #f3f3f3;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s, transform 0.2s;
+
+  &:hover {
+    background-color: #e5e5e5;
+    transform: scale(1.05);
+  }
+
+  svg {
+    stroke: #7f5af0;
+    width: 20px;
+    height: 20px;
+  }
+`;
 
 const Container = styled.div`
   min-height: 100vh;
@@ -256,6 +286,9 @@ function Perfil() {
   return (
     <>
       <Globalstyles />
+      <BackButton onClick={() => navigate("/")}>
+        <ArrowLeft />
+      </BackButton>
       <Container>
         {name && (
           <UserWrapper onClick={toggleDropdown}>

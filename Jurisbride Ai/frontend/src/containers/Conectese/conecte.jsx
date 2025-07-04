@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Globalstyles from "../../styles/globalstyles.js";
 import bgImage from "../../assets/bridgejai.png";
+import { ArrowLeft } from "lucide-react";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -72,11 +73,47 @@ const ButtonLink = styled(Link)`
   }
 `;
 
+// 🟣 Botão de voltar redondo com ícone
+const BackButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f3f3f3;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s, transform 0.2s;
+  z-index: 1000;
+
+  &:hover {
+    background: #e5e5e5;
+    transform: scale(1.05);
+  }
+
+  svg {
+    stroke: #7f5af0;
+    width: 20px;
+    height: 20px;
+  }
+`;
+
 function Conectse() {
+  const navigate = useNavigate();
+
   return (
     <>
       <Globalstyles />
       <PageWrapper>
+        <BackButton onClick={() => navigate("/")}>
+          <ArrowLeft />
+        </BackButton>
+
         <LeftSide />
 
         <RightSide>

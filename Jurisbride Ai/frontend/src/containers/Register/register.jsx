@@ -4,6 +4,36 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
+
+const BackButton = styled.button`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f3f3f3;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s, transform 0.2s;
+
+  &:hover {
+    background: #e5e5e5;
+    transform: scale(1.05);
+  }
+
+  svg {
+    stroke: #7f5af0;
+    width: 20px;
+    height: 20px;
+  }
+`;
 
 const RegisterContainer = styled.div`
   max-inline-size: 400px;
@@ -172,6 +202,9 @@ const Register = () => {
 
   return (
     <RegisterContainer>
+      <BackButton onClick={() => navigate("/")}>
+      <ArrowLeft />
+      </BackButton>
       <Title>Comece por aqui!</Title>
       <Form onSubmit={handleSubmit}>
         <FormGroup>

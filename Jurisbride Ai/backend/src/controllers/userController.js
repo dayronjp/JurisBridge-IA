@@ -125,3 +125,21 @@ export const updateAvatar = async (req, res) => {
     res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT name, type, avatar FROM users');
+
+    const users = result.rows.map(user => ({
+      name: user.name,
+      type: user.type,
+      avatar: user.avatar ? user.avatar.toString('base64') : null,
+    }));
+
+    res.json(users);
+  } catch (error) {
+    console.error("Erro ao buscar todos os usuários:", error);
+    res.status(500).json({ error: "Erro interno no servidor" });
+  }
+};

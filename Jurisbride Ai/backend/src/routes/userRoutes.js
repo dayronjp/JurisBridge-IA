@@ -7,7 +7,8 @@ import {
   getUserProfile,        
   updateDescription,
   updateAvatar,
-  getAvatar      
+  getAvatar,
+  getAllUsers      
 } from '../../../backend/src/controllers/userController.js';
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.get('/profile', getUserProfile);
 router.put('/update-description', updateDescription);
 router.get('/avatar/:name', getAvatar);
 router.put('/update-avatar', upload.single('avatar'), updateAvatar);
+router.get('/all', getAllUsers);
 
 
 export default router;

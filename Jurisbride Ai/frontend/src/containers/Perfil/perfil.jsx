@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Globalstyles from "../../styles/globalstyles";
 import styled from "styled-components";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Pencil, ShieldCheck, UserRound } from "lucide-react";
+import { Pencil, ShieldCheck, UserRound, ArrowLeft } from "lucide-react";
 import imageCompression from "browser-image-compression";
-import { ArrowLeft} from "lucide-react"
 
 const BackButton = styled.button`
   position: fixed;
@@ -37,11 +36,11 @@ const BackButton = styled.button`
 `;
 
 const Container = styled.div`
-  min-height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  width: 100%;
+  overflow-x: hidden;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: flex-start;
   padding: 3rem;
   box-sizing: border-box;
@@ -53,6 +52,8 @@ const ProfileCard = styled.div`
   color: white;
   position: relative;
   gap: 1.5rem;
+  width: 100%;
+  max-width: 800px;
 `;
 
 const AvatarRow = styled.div`
@@ -119,7 +120,6 @@ const DescriptionBox = styled.div`
   color: #ccc;
   min-height: 180px;
   width: 100%;
-  max-width: 600px;
 `;
 
 const EditIcon = styled(Pencil)`
@@ -191,6 +191,69 @@ const Dropdown = styled.div`
   }
 `;
 
+const SearchSection = styled.div`
+  margin-top: 3rem;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+`;
+
+const SearchInput = styled.input`
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: none;
+  width: 100%;
+  background-color: #1e1e2e;
+  color: white;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(127, 90, 240, 0.4);
+  outline: none;
+  transition: 0.3s ease;
+
+  &:focus {
+    background-color: #282843;
+    box-shadow: 0 0 15px rgba(127, 90, 240, 0.7);
+  }
+`;
+
+const UserGrid = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
+`;
+
+const UserCard = styled.div`
+  flex: 1 1 200px;
+  max-width: 240px;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 0 14px rgba(127, 90, 240, 0.25);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 18px rgba(127, 90, 240, 0.35);
+  }
+`;
+
+const UserAvatar = styled.div`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-image: ${(props) => (props.src ? `url(${props.src})` : "none")};
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 1rem;
+`;
+
 function Perfil() {
   const name = localStorage.getItem("userName");
   const userType = localStorage.getItem("userType") || "user";
@@ -200,6 +263,8 @@ function Perfil() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [editingDesc, setEditingDesc] = useState(false);
   const fileInputRef = useRef();
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -217,7 +282,17 @@ function Perfil() {
       }
     };
 
+    const fetchAllUsers = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/users/all");
+        setUsers(res.data);
+      } catch (err) {
+        console.error("Erro ao buscar usuários:", err);
+      }
+    };
+
     if (name) fetchUserData();
+    fetchAllUsers();
   }, [name]);
 
   const handleLogout = () => {
@@ -238,12 +313,7 @@ function Perfil() {
     const file = e.target.files[0];
     if (file) {
       try {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1024,
-          useWebWorker: true,
-        };
-
+        const options = { maxSizeMB: 1, maxWidthOrHeight: 1024, useWebWorker: true };
         const compressedFile = await imageCompression(file, options);
 
         const formData = new FormData();
@@ -251,9 +321,7 @@ function Perfil() {
         formData.append("avatar", compressedFile);
 
         await axios.put("http://localhost:3000/api/users/update-avatar", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         });
 
         const localUrl = URL.createObjectURL(compressedFile);
@@ -282,6 +350,10 @@ function Perfil() {
       handleDescriptionSave(description);
     }
   };
+
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase()) && user.name !== name
+  );
 
   return (
     <>
@@ -336,6 +408,28 @@ function Perfil() {
               </>
             )}
           </DescriptionBox>
+
+          <SearchSection>
+            <SearchInput
+              type="text"
+              placeholder="Buscar usuários por nome..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </SearchSection>
+
+          <UserGrid>
+            {filteredUsers.map((user, index) => (
+              <UserCard key={index}>
+                <UserAvatar src={`data:image/png;base64,${user.avatar}`} />
+                <h3>{user.name}</h3>
+                <UserBadge>
+                  {user.type === "advogado" ? <ShieldCheck size={16} /> : <UserRound size={16} />}
+                  {user.type === "advogado" ? "Advogado" : "Usuário"}
+                </UserBadge>
+              </UserCard>
+            ))}
+          </UserGrid>
         </ProfileCard>
       </Container>
     </>
